@@ -31,14 +31,20 @@ class MainVoucherGUI(player: Player) : GUI(player), KoinComponent {
                     MM.deserialize("<aqua><voucher>", Placeholder.unparsed("voucher", voucher.id)).withDefaults()
                 )
                 it.lore(
-                    listOf(displayName ?: Component.translatable(this)).plus(
+                    listOf((displayName ?: Component.translatable(this)).withDefaults()).plus(
                         it.lore().orEmpty()
                             .plus(listOf(Component.empty(), parseMM("<red>Shift+right click to delete.")))
                     )
                 )
             }
-        }) { _ ->
-            VoucherGUI(player, voucher)
+        }) { e ->
+            if (e.isRightClick && e.isShiftClick) {
+                plugin.vouchers.remove(voucher.id)
+                plugin.saveVouchers()
+                MainVoucherGUI(player)
+            } else {
+                VoucherGUI(player, voucher)
+            }
         }
     }
 
