@@ -1,0 +1,18 @@
+geckovouchers,voucher {
+    edit {
+        help Open the voucher editor
+        permission geckovouchers.edit
+        user player
+        hook edit
+    }
+    give voucher:voucher player:target?(context self) int:amount?(1) {
+        help Give a mouse a cookie, and a player a voucher
+        permission geckovouchers.give
+        hook give
+    }
+    reload {
+        help Reload the configs
+        permission geckovouchers.reload
+        hook reload
+    }
+}
