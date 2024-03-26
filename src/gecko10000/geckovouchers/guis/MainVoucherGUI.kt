@@ -33,15 +33,25 @@ class MainVoucherGUI(player: Player) : GUI(player), KoinComponent {
                 it.lore(
                     listOf((displayName ?: Component.translatable(this)).withDefaults()).plus(
                         it.lore().orEmpty()
-                            .plus(listOf(Component.empty(), parseMM("<red>Shift+right click to delete.")))
+                            .plus(
+                                listOf(
+                                    Component.empty(),
+                                    parseMM("<red>Shift+left click to get"),
+                                    parseMM("<red>Shift+right click to delete.")
+                                )
+                            )
                     )
                 )
             }
         }) { e ->
-            if (e.isRightClick && e.isShiftClick) {
-                plugin.vouchers.remove(voucher.id)
-                plugin.saveVouchers()
-                MainVoucherGUI(player)
+            if (e.isShiftClick) {
+                if (e.isLeftClick) {
+                    ItemUtils.give(player, voucher.voucherItem)
+                } else if (e.isRightClick) {
+                    plugin.vouchers.remove(voucher.id)
+                    plugin.saveVouchers()
+                    MainVoucherGUI(player)
+                }
             } else {
                 VoucherGUI(player, voucher)
             }
