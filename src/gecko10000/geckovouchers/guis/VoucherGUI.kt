@@ -6,6 +6,7 @@ import gecko10000.geckolib.extensions.parseMM
 import gecko10000.geckolib.extensions.withDefaults
 import gecko10000.geckovouchers.GeckoVouchers
 import gecko10000.geckovouchers.Voucher
+import gecko10000.geckovouchers.VoucherManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Bukkit
@@ -21,6 +22,7 @@ import redempt.redlib.misc.ChatPrompt
 class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), KoinComponent {
 
     private val plugin: GeckoVouchers by inject()
+    private val voucherManager: VoucherManager by inject()
 
     companion object {
         private const val SIZE = 18
@@ -48,7 +50,12 @@ class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), Ko
         }) { e ->
             val cursor = e.cursor
             if (cursor.isEmpty) return@create
-            VoucherGUI(player, voucher.copy(item = cursor.asOne()))
+            val cleaned = cursor.asOne().apply {
+                editMeta {
+                    it.persistentDataContainer.remove(voucherManager.voucherKey)
+                }
+            }
+            VoucherGUI(player, voucher.copy(item = cleaned))
         })
         inventory.addButton(4, ItemButton.create(ItemStack(Material.PAPER).apply {
             amount = voucher.commands.size.coerceAtLeast(1)
