@@ -36,8 +36,10 @@ class MainVoucherGUI(player: Player) : GUI(player), KoinComponent {
                             .plus(
                                 listOf(
                                     Component.empty(),
-                                    parseMM("<red>Shift+left click to get"),
-                                    parseMM("<red>Shift+right click to delete.")
+                                    parseMM("<red>Left click to edit."),
+                                    parseMM("<red>Right click to get."),
+                                    parseMM("<red>Shift+left click to move left."),
+                                    parseMM("<red>Shift+right click to move right."),
                                 )
                             )
                     )
@@ -45,15 +47,28 @@ class MainVoucherGUI(player: Player) : GUI(player), KoinComponent {
             }
         }) { e ->
             if (e.isShiftClick) {
-                if (e.isLeftClick) {
-                    ItemUtils.give(player, voucher.voucherItem)
-                } else if (e.isRightClick) {
-                    plugin.vouchers.remove(voucher.id)
-                    plugin.saveVouchers()
-                    MainVoucherGUI(player)
-                }
-            } else {
+                if (!e.isRightClick && !e.isLeftClick) return@create
+                val left = e.isLeftClick
+                val right = !left
+                val entries = plugin.vouchers.toList().toMutableList()
+                val index = entries.indexOfFirst { it.first == voucher.id }
+                if (index == -1) return@create
+                if (left && index == 0) return@create
+                if (right && index == entries.size - 1) return@create
+                val toMove = entries[index]
+                entries.removeAt(index)
+                entries.add(index + (if (left) -1 else 1), toMove)
+                plugin.vouchers.clear()
+                plugin.vouchers.putAll(entries)
+                plugin.saveVouchers()
+                MainVoucherGUI(player)
+                return@create
+            }
+            if (e.isLeftClick) {
                 VoucherGUI(player, voucher)
+            }
+            if (e.isRightClick) {
+                ItemUtils.give(player, voucher.voucherItem)
             }
         }
     }

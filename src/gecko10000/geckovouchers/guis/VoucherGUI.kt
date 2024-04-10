@@ -100,6 +100,13 @@ class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), Ko
             plugin.saveVouchers()
             MainVoucherGUI(player)
         })
+        inventory.addButton(SIZE - 1, ItemButton.create(plugin.config.deleteButton.item) { e ->
+            if (e.isRightClick && e.isShiftClick) {
+                plugin.vouchers.remove(voucher.id)
+                plugin.saveVouchers()
+                MainVoucherGUI(player)
+            }
+        })
         return inventory
     }
 

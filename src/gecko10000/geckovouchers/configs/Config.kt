@@ -39,6 +39,14 @@ data class Config(
         name = MM.deserialize("<green>Confirm"),
         material = Material.LIME_STAINED_GLASS_PANE,
     ),
+    val deleteButton: DisplayItem = DisplayItem(
+        name = MM.deserialize("<red>Delete"),
+        lore = listOf(
+            MM.deserialize("<red><bold>Dangerous operation."),
+            MM.deserialize("<red>Shift+right click if you're sure.")
+        ),
+        material = Material.RED_STAINED_GLASS_PANE,
+    ),
 ) {
     @Transient
     private val _fillerItem = ItemStack(filler)
