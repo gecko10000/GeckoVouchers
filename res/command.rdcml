@@ -15,4 +15,9 @@ geckovouchers,voucher {
         permission geckovouchers.reload
         hook reload
     }
+    execute voucher:voucher player:target?(context self) {
+        help Execute a voucher's commands
+        permission geckovouchers.execute
+        hook execute
+    }
 }

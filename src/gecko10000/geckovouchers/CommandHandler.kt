@@ -15,6 +15,7 @@ import redempt.redlib.itemutils.ItemUtils
 class CommandHandler : KoinComponent {
 
     private val plugin: GeckoVouchers by inject()
+    private val voucherManager: VoucherManager by inject()
 
     init {
         CommandParser(plugin.getResource("command.rdcml"))
@@ -40,6 +41,12 @@ class CommandHandler : KoinComponent {
     fun reloadCommand(sender: CommandSender) {
         plugin.reloadConfigs()
         sender.sendMessage(MM.deserialize("<green>Configs reloaded."))
+    }
+
+    @CommandHook("execute")
+    fun executeCommand(sender: CommandSender, voucher: Voucher, target: Player) {
+        voucherManager.reward(voucher, target)
+        sender.sendMessage(MM.deserialize("<green>Rewarded ${target.name} with the commands from ${voucher.id}."))
     }
 
 }
