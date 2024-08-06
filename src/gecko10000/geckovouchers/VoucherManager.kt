@@ -41,6 +41,7 @@ class VoucherManager : KoinComponent {
             val item = e.item ?: return@EventListener
             if (item.isEmpty || !item.hasItemMeta()) return@EventListener
             val voucherId = item.getVoucherId() ?: return@EventListener
+            e.isCancelled = true
             val voucher = plugin.vouchers[voucherId] ?: return@EventListener
             val player = e.player
             val uuid = player.uniqueId
