@@ -3,22 +3,19 @@
 package gecko10000.geckovouchers.configs
 
 import com.charleskorn.kaml.YamlComment
-import gecko10000.geckoconfig.objects.DisplayItem
-import gecko10000.geckoconfig.serializers.MMComponentSerializer
+import gecko10000.geckolib.config.objects.DisplayItem
+import gecko10000.geckolib.config.serializers.MMComponentSerializer
 import gecko10000.geckolib.extensions.MM
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.UseSerializers
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 
 @Serializable
 data class Config(
     val confirmationMessage: Component = MM.deserialize("<gray>Right click again to use this voucher."),
     @YamlComment("In ticks")
     val confirmTimer: Long = 200,
-    private val filler: Material = Material.BLACK_STAINED_GLASS_PANE,
     val prevButton: DisplayItem = DisplayItem(
         name = MM.deserialize("<red>Previous"),
         material = Material.RED_STAINED_GLASS_PANE,
@@ -47,9 +44,4 @@ data class Config(
         ),
         material = Material.RED_STAINED_GLASS_PANE,
     ),
-) {
-    @Transient
-    private val _fillerItem = ItemStack(filler)
-    val fillerItem
-        get() = _fillerItem.clone()
-}
+)

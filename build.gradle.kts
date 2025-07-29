@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -21,26 +21,21 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenLocal()
     mavenCentral()
+    maven("https://eldonexus.de/repository/maven-public/")
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://redempt.dev/")
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib", version = "1.9.22"))
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly(kotlin("stdlib", version = "2.2.0"))
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
-    compileOnly("gecko10000.geckolib:GeckoLib:1.0-SNAPSHOT")
-    implementation("gecko10000.geckoconfig:GeckoConfig:1.0-SNAPSHOT")
-
-    compileOnly("com.github.Redempt:RedLib:6.5.10")
-
-    implementation("io.insert-koin:koin-core:3.5.3") {
-        exclude("org.jetbrains.kotlin")
-    }
+    compileOnly("gecko10000.geckolib:GeckoLib:1.1")
+    compileOnly("net.strokkur", "strokk-commands-annotations", "1.2.4-SNAPSHOT")
+    annotationProcessor("net.strokkur:strokk-commands-processor:1.2.4-SNAPSHOT")
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 tasks {

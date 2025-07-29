@@ -1,18 +1,32 @@
 package gecko10000.geckovouchers
 
-import gecko10000.geckoconfig.YamlFileManager
+import gecko10000.geckoanvils.di.MyKoinComponent
+import gecko10000.geckoanvils.di.MyKoinContext
+import gecko10000.geckolib.config.YamlFileManager
+import gecko10000.geckovouchers.commands.CommandHandler
 import gecko10000.geckovouchers.configs.Config
 import gecko10000.geckovouchers.configs.VoucherHolder
 import org.bukkit.plugin.java.JavaPlugin
-import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.component.inject
 
-class GeckoVouchers : JavaPlugin() {
+class GeckoVouchers : JavaPlugin(), MyKoinComponent {
 
-    private lateinit var configFile: YamlFileManager<Config>
+    val voucherManager: VoucherManager by inject()
+
+    private val configFile = YamlFileManager(
+        dataFolder,
+        initialValue = Config(),
+        serializer = Config.serializer()
+    )
     val config: Config
         get() = configFile.value
 
-    private lateinit var voucherFile: YamlFileManager<VoucherHolder>
+    private val voucherFile = YamlFileManager(
+        dataFolder,
+        configName = "vouchers.yml",
+        initialValue = VoucherHolder(),
+        serializer = VoucherHolder.serializer()
+    )
     val vouchers: MutableMap<String, Voucher>
         get() = voucherFile.value.vouchers
 
@@ -24,17 +38,8 @@ class GeckoVouchers : JavaPlugin() {
     fun saveVouchers() = voucherFile.save()
 
     override fun onEnable() {
-        configFile = YamlFileManager(dataFolder, initialValue = Config(), serializer = Config.serializer())
-        voucherFile = YamlFileManager(
-            dataFolder,
-            configName = "vouchers.yml",
-            initialValue = VoucherHolder(),
-            serializer = VoucherHolder.serializer()
-        )
-        startKoin {
-            modules(pluginModules(this@GeckoVouchers))
-        }
-        CommandHandler()
+        MyKoinContext.init(this)
+        CommandHandler().register()
     }
 
 }

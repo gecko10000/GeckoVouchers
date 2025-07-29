@@ -1,5 +1,8 @@
 package gecko10000.geckovouchers
 
+import gecko10000.geckoanvils.di.MyKoinComponent
+import gecko10000.geckolib.misc.EventListener
+import gecko10000.geckolib.misc.Task
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -10,11 +13,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import redempt.redlib.misc.EventListener
-import redempt.redlib.misc.Task
 import java.util.*
 
-class VoucherManager : KoinComponent {
+class VoucherManager : MyKoinComponent {
 
     private val plugin: GeckoVouchers by inject()
     val voucherKey by lazy { NamespacedKey(plugin, "voucher") }

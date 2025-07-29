@@ -1,9 +1,13 @@
 package gecko10000.geckovouchers.guis
 
-import gecko10000.geckolib.GUI
+import gecko10000.geckoanvils.di.MyKoinComponent
 import gecko10000.geckolib.extensions.MM
 import gecko10000.geckolib.extensions.parseMM
 import gecko10000.geckolib.extensions.withDefaults
+import gecko10000.geckolib.inventorygui.GUI
+import gecko10000.geckolib.inventorygui.InventoryGUI
+import gecko10000.geckolib.inventorygui.ItemButton
+import gecko10000.geckolib.misc.ChatPrompt
 import gecko10000.geckovouchers.GeckoVouchers
 import gecko10000.geckovouchers.Voucher
 import gecko10000.geckovouchers.VoucherManager
@@ -15,11 +19,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import redempt.redlib.inventorygui.InventoryGUI
-import redempt.redlib.inventorygui.ItemButton
-import redempt.redlib.misc.ChatPrompt
 
-class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), KoinComponent {
+class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), MyKoinComponent {
 
     private val plugin: GeckoVouchers by inject()
     private val voucherManager: VoucherManager by inject()
@@ -36,7 +37,7 @@ class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), Ko
                 MM.deserialize("<#0085e6>Editing <voucher>", Placeholder.unparsed("voucher", voucher.id))
             )
         )
-        inventory.fill(0, SIZE, plugin.config.fillerItem)
+        inventory.fill(0, SIZE, FILLER)
         inventory.addButton(1, ItemButton.create(voucher.voucherItem.apply {
             editMeta {
                 val displayName = it.displayName()
@@ -76,9 +77,12 @@ class VoucherGUI(player: Player, private val voucher: Voucher) : GUI(player), Ko
                 VoucherGUI(player, voucher.copy(commands = voucher.commands.dropLast(1)))
             } else {
                 player.closeInventory()
-                ChatPrompt.prompt(player, "Enter a new command to run (use %player% for player name):", { s ->
-                    VoucherGUI(player, voucher.copy(commands = voucher.commands.plus(s)))
-                }) {
+                ChatPrompt.prompt(
+                    player,
+                    Component.text("Enter a new command to run (use %player% for player name):"),
+                    { s ->
+                        VoucherGUI(player, voucher.copy(commands = voucher.commands.plus(s)))
+                    }) {
                     if (it == ChatPrompt.CancelReason.PLAYER_CANCELLED) VoucherGUI(player, voucher)
                 }
             }
